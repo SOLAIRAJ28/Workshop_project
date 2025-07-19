@@ -38,5 +38,40 @@
 }
 
 .read-the-docs {
+/* Auth page styles */
+.auth-container {
+  background: #f7f7fa;
+  border-radius: 16px;
+  box-shadow: 0 2px 8px #0001;
+  padding: 2rem;
+  max-width: 350px;
+  margin: 2rem auto;
+}
+
+.auth-input {
+  display: block;
+  width: 90%;
+  margin: 1rem auto;
+  padding: 0.7rem;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 1.1rem;
+}
+
+.auth-btn {
+  background: #61dafb;
+  color: #222;
+  border: none;
+  border-radius: 8px;
+  padding: 0.7rem 1.5rem;
+  font-size: 1.1rem;
+  cursor: pointer;
+  margin-top: 1rem;
+  transition: background 0.2s;
+}
+.auth-btn:hover {
+  background: #21a1f3;
+  color: #fff;
+}
   color: #888;
 }

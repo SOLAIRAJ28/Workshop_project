@@ -1,18 +1,25 @@
-import React, { useState } from 'react';
-import Login from './components/Login';
-import Signup from './components/Signup';
-import './index.css'; // Assuming you have some styles in App.css
+import React from "react";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Login from "./components/Login";
+import Signup from "./components/Signup";
+import PasswordManager from "./components/PasswordManager";
+import MainPage from "./components/MainPage";
+import SavePassword from "./components/SavePassword";
+import ViewPasswords from "./components/ViewPasswords";
 
 function App() {
-  const [showLogin, setShowLogin] = useState(true);
-
   return (
-    <div style={{ padding: '20px' }}>
-      {showLogin ? <Login /> : <Signup />}
-      <button onClick={() => setShowLogin(!showLogin)} style={{ marginTop: '10px' }}>
-        {showLogin ? 'Go to Signup' : 'Go to Login'}
-      </button>
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Login />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
+        <Route path="/main" element={<MainPage />} />
+        <Route path="/save" element={<SavePassword />} />
+        <Route path="/view" element={<ViewPasswords />} />
+        <Route path="/vault" element={<PasswordManager />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 
