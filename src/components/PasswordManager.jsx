@@ -9,8 +9,21 @@ const navBtnStyle = {
   fontWeight: 'bold',
   fontSize: '1rem',
   cursor: 'pointer',
+  transition: 'background 0.2s, color 0.2s',
 };
 
+// Custom hook for hover effect
+function useHoverStyle(baseStyle, hoverStyle) {
+  const [isHovered, setIsHovered] = React.useState(false);
+  const style = isHovered ? { ...baseStyle, ...hoverStyle } : baseStyle;
+  return [
+    style,
+    {
+      onMouseEnter: () => setIsHovered(true),
+      onMouseLeave: () => setIsHovered(false),
+    },
+  ];
+}
 const inputStyle = {
   width: '100%',
   padding: '0.8rem',
@@ -49,7 +62,7 @@ const PasswordManager = () => {
 
   useEffect(() => {
     if (!currentUser) return;
-    const user = JSON.parse(localStorage.getItem(currentUser));
+    const user = JSON.parse(localStorage.getItem(currentUser) || '{}');
     setVault(user?.vault || []);
   }, [currentUser]);
 
@@ -60,7 +73,8 @@ const PasswordManager = () => {
       return;
     }
 
-    const user = JSON.parse(localStorage.getItem(currentUser));
+    const user = JSON.parse(localStorage.getItem(currentUser) || '{}');
+
     if (username === currentUser && sitePassword === user.password) {
       alert("You can't save your own login credentials.");
       return;
@@ -80,9 +94,16 @@ const PasswordManager = () => {
     window.location.href = '/login';
   };
 
+  // Navbar button hover styles
+  const [viewBtnStyle, viewBtnEvents] = useHoverStyle(navBtnStyle, { background: '#1976d2' });
+  const [addBtnStyle, addBtnEvents] = useHoverStyle(navBtnStyle, { background: '#1976d2' });
+  const [logoutBtnStyle, logoutBtnEvents] = useHoverStyle(
+    { ...navBtnStyle, background: '#c62828' },
+    { background: '#b71c1c', color: '#fff' }
+  );
+
   return (
     <div
-      className="password-manager-container"
       style={{
         width: '100vw',
         minHeight: '100vh',
@@ -92,61 +113,65 @@ const PasswordManager = () => {
         alignItems: 'center',
         padding: '0',
         margin: '0',
-        overflowX: 'hidden'
+        overflowX: 'hidden',
       }}
     >
-      {/* Header */}
+      {/* Fixed Navbar */}
       <header
         style={{
-          width: '100vw',
+          width: '100%',
           background: '#003366',
           display: 'flex',
-          flexDirection: 'row',
-          alignItems: 'center',
           justifyContent: 'space-between',
+          alignItems: 'center',
           padding: '1.2rem 2.5rem',
-          position: 'sticky',
+          position: 'fixed',
           top: 0,
-          zIndex: 10
+          left: 0,
+          right: 0,
+          zIndex: 10,
         }}
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.7rem' }}>
-          <span
-            role="img"
-            aria-label="lock"
-            style={{ fontSize: '1.5rem', color: '#fff' }}
-          >
-            🔒
-          </span>
+          <img src="/vite.svg" alt="App Logo" style={{ width: '32px', height: '32px', borderRadius: '6px', objectFit: 'cover', background: '#fff', border: 'none' }} />
           <span
             style={{
               color: '#fff',
               fontWeight: 'bold',
               fontSize: '1.4rem',
               letterSpacing: '1px',
-              fontFamily: 'Segoe UI, sans-serif'
+              fontFamily: 'Segoe UI, sans-serif',
             }}
           >
             MyPassword Manager
           </span>
         </div>
         <nav style={{ display: 'flex', gap: '1rem' }}>
-          <button style={navBtnStyle} onClick={() => (window.location.href = '/view')}>
+          <button
+            style={viewBtnStyle}
+            onClick={() => (window.location.href = '/view')}
+            {...viewBtnEvents}
+          >
             Saved Passwords
           </button>
-          <button style={navBtnStyle} onClick={() => (window.location.href = '/save')}>
+          <button
+            style={addBtnStyle}
+            onClick={() => (window.location.href = '/save')}
+            {...addBtnEvents}
+          >
             Add Password
           </button>
           <button
-            style={{ ...navBtnStyle, background: '#c62828' }}
+            style={logoutBtnStyle}
             onClick={logout}
+            {...logoutBtnEvents}
           >
             Logout
           </button>
         </nav>
       </header>
 
-      {/* Main Box */}
+      {/* Main Content */}
       <div
         style={{
           width: '100%',
@@ -155,11 +180,11 @@ const PasswordManager = () => {
           borderRadius: '16px',
           boxShadow: '0 2px 8px #0001',
           padding: '2rem',
-          marginTop: '2rem',
+          marginTop: '8rem', // Increased to ensure content is below navbar
           marginBottom: '2rem',
           display: 'flex',
           flexDirection: 'column',
-          alignItems: 'center'
+          alignItems: 'center',
         }}
       >
         <h2
@@ -168,26 +193,26 @@ const PasswordManager = () => {
             marginBottom: '2rem',
             fontSize: '2rem',
             fontWeight: 'bold',
-            textAlign: 'center'
+            textAlign: 'center',
           }}
         >
-          🔐 Add a New Password
+          Add a New Password
         </h2>
 
         <input
-          placeholder="🌐 Site Name"
+          placeholder="Site Name"
           value={site}
           onChange={(e) => setSite(e.target.value)}
           style={inputStyle}
         />
         <input
-          placeholder="👤 Username / Email"
+          placeholder="Username / Email"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
           style={inputStyle}
         />
         <input
-          placeholder="🔑 Password"
+          placeholder="Password"
           type="password"
           value={sitePassword}
           onChange={(e) => setSitePassword(e.target.value)}
@@ -195,25 +220,16 @@ const PasswordManager = () => {
         />
 
         <button onClick={savePassword} style={primaryBtnStyle}>
-          💾 Save Password
+          Save Password
         </button>
-        <button
-          onClick={() => (window.location.href = '/view')}
-          style={secondaryBtnStyle}
-        >
-          📁 View Passwords
+        <button onClick={() => (window.location.href = '/view')} style={secondaryBtnStyle}>
+          View Passwords
         </button>
 
         {vault.length > 0 && (
           <>
-            <h3
-              style={{
-                marginTop: '2rem',
-                color: '#21a1f3',
-                fontWeight: 'bold'
-              }}
-            >
-              📜 Saved Passwords
+            <h3 style={{ marginTop: '2rem', color: '#21a1f3', fontWeight: 'bold' }}>
+              Saved Passwords
             </h3>
             <ul style={{ width: '100%', padding: 0, listStyle: 'none' }}>
               {vault.map((item, index) => (
@@ -228,12 +244,12 @@ const PasswordManager = () => {
                     fontSize: '1rem',
                     color: '#222',
                     display: 'flex',
-                    flexDirection: 'column'
+                    flexDirection: 'column',
                   }}
                 >
-                  <strong style={{ color: '#21a1f3' }}>🌐 {item.site}</strong>
-                  <span>👤 {item.username}</span>
-                  <span>🔑 {item.password}</span>
+                  <strong style={{ color: '#21a1f3' }}>{item.site}</strong>
+                  <span>{item.username}</span>
+                  <span>{item.password}</span>
                 </li>
               ))}
             </ul>
