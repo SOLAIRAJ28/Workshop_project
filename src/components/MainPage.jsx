@@ -37,9 +37,20 @@ function MainPage() {
           boxShadow: "0 2px 5px rgba(0,0,0,0.2)",
         }}
       >
+        {/* Logo */}
         <div style={{ display: "flex", alignItems: "center", gap: "0.6rem" }}>
-          
-          <h2 style={{ color: "#fff", margin: 0 }}>🔒Password Manager</h2>
+          <span role="img" aria-label="lock" style={{ fontSize: "1.4rem" }}>
+            🔐
+          </span>
+          <span
+            style={{
+              color: "#fff",
+              fontWeight: "bold",
+              fontSize: "1.2rem",
+            }}
+          >
+            Password Manager
+          </span>
         </div>
 
         <nav style={{ display: "flex", gap: "1rem" }}>
