@@ -37,91 +37,83 @@ const ViewPasswords = () => {
     <div className="vault-container" style={{ width: '100vw', minHeight: '100vh', background: '#f7f7fa', display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '0', margin: '0', overflow: 'hidden' }}>
       <header
         style={{
-          width: '100%',
-          background: '#003366',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          padding: '1.2rem 2.5rem',
-          position: 'fixed',
+          width: "98%",
+          background: "linear-gradient(to right, #0f2027, #203a43, #2c5364)",
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          padding: "1.2rem 2rem",
+          position: "sticky",
           top: 0,
-          left: 0,
-          right: 0,
-          zIndex: 10,
+          zIndex: 100,
+          boxShadow: "0 2px 5px rgba(0,0,0,0.2)",
         }}
       >
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.7rem' }}>
-          <span role="img" aria-label="lock" style={{ fontSize: '1.5rem', color: '#fff' }}>🔒</span>
-          <span
-            style={{
-              color: '#fff',
-              fontWeight: 'bold',
-              fontSize: '1.4rem',
-              letterSpacing: '1px',
-              fontFamily: 'Segoe UI, sans-serif',
-            }}
-          >
-            MyPassword Manager
-          </span>
+        <div style={{ display: "flex", alignItems: "center", gap: "0.6rem" }}>
+          <h2 style={{ color: "#fff", margin: 0 }}>🔒Password Manager</h2>
         </div>
-        <nav style={{ display: 'flex', gap: '1rem' }}>
+
+        <nav style={{ display: "flex", gap: "1rem", alignItems: "center" }}>
           <button
+            onClick={() => window.location.href = "/view"}
             style={{
-              padding: '0.6rem 1.2rem',
-              borderRadius: '8px',
-              border: 'none',
-              background: '#00509e',
-              color: '#fff',
-              fontWeight: 'bold',
-              fontSize: '1rem',
-              cursor: 'pointer',
-              transition: 'background 0.2s, color 0.2s',
-              minWidth: '150px',
+              padding: "0.6rem 1.2rem",
+              borderRadius: "8px",
+              border: "none",
+              background: "#0077cc",
+              color: "#fff",
+              fontWeight: "bold",
+              cursor: "pointer",
+              transition: "background 0.3s",
             }}
-            onClick={() => window.location.href = '/view'}
+            onMouseOver={(e) => e.target.style.background = '#005fa3'}
+            onMouseOut={(e) => e.target.style.background = '#0077cc'}
           >
             Saved Passwords
           </button>
+
           <button
+            onClick={() => window.location.href = "/save"}
             style={{
-              padding: '0.6rem 1.2rem',
-              borderRadius: '8px',
-              border: 'none',
-              background: '#00509e',
-              color: '#fff',
-              fontWeight: 'bold',
-              fontSize: '1rem',
-              cursor: 'pointer',
-              transition: 'background 0.2s, color 0.2s',
-              minWidth: '150px',
+              padding: "0.6rem 1.2rem",
+              borderRadius: "8px",
+              border: "none",
+              background: "#0077cc",
+              color: "#fff",
+              fontWeight: "bold",
+              cursor: "pointer",
+              transition: "background 0.3s",
             }}
-            onClick={() => window.location.href = '/save'}
+            onMouseOver={(e) => e.target.style.background = '#005fa3'}
+            onMouseOut={(e) => e.target.style.background = '#0077cc'}
           >
             Add Password
           </button>
+
           <button
-            style={{
-              padding: '0.6rem 1.2rem',
-              borderRadius: '8px',
-              border: 'none',
-              background: '#c62828',
-              color: '#fff',
-              fontWeight: 'bold',
-              fontSize: '1rem',
-              cursor: 'pointer',
-              transition: 'background 0.2s, color 0.2s',
-              minWidth: '120px',
-            }}
             onClick={() => {
-              localStorage.removeItem('currentUser');
-              window.location.href = '/login';
+              localStorage.removeItem("currentUser");
+              window.location.href = "/login";
             }}
+            style={{
+              padding: "0.6rem 1.2rem",
+              borderRadius: "8px",
+              border: "none",
+              background: "#e53935",
+              color: "#fff",
+              fontWeight: "bold",
+              cursor: "pointer",
+              transition: "background 0.3s",
+            }}
+            onMouseOver={(e) => e.target.style.background = '#c62828'}
+            onMouseOut={(e) => e.target.style.background = '#e53935'}
           >
             Logout
           </button>
         </nav>
       </header>
-      <div style={{ width: '100%', maxWidth: '600px', background: '#fff', borderRadius: '16px', boxShadow: '0 2px 8px #0001', padding: '2rem', marginTop: '8rem', marginBottom: '2rem', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+
+      <div style={{ width: '100%', maxWidth: '500px', background: '#fff', borderRadius: '16px', boxShadow: '0 2px 8px #0001', padding: '2rem', marginTop: '8rem', marginBottom: '2rem', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
         <h2 style={{ color: '#21a1f3', marginBottom: '2rem', fontSize: '2rem', fontWeight: 'bold', textAlign: 'center' }}>Saved Passwords</h2>
         {vault.length === 0 ? (
           <div style={{ color: '#888', fontStyle: 'italic' }}>No passwords saved yet.</div>
@@ -132,7 +124,10 @@ const ViewPasswords = () => {
                 <strong style={{ color: '#21a1f3' }}>{item.site}</strong>
                 <span>{item.username}</span>
                 <span>{item.password}</span>
-                <button onClick={() => handleDelete(index)} style={{ marginTop: '0.7rem', padding: '0.5rem 1.2rem', borderRadius: '8px', border: 'none', background: '#c62828', color: '#fff', fontWeight: 'bold', fontSize: '1rem', cursor: 'pointer', boxShadow: '0 1px 4px #0001', transition: 'background 0.2s' }}>Delete</button>
+                <div style={{ display: 'flex', gap: '0.5rem', marginTop: '0.7rem' }}>
+                  <button onClick={() => handleEdit(index)} style={{ padding: '0.5rem 1.2rem', borderRadius: '8px', border: 'none', background: '#0077cc', color: '#fff', fontWeight: 'bold', cursor: 'pointer' }}>Edit</button>
+                  <button onClick={() => handleDelete(index)} style={{ padding: '0.5rem 1.2rem', borderRadius: '8px', border: 'none', background: '#c62828', color: '#fff', fontWeight: 'bold', cursor: 'pointer' }}>Delete</button>
+                </div>
               </li>
             ))}
           </ul>

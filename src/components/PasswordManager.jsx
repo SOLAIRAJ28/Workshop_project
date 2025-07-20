@@ -133,7 +133,8 @@ const PasswordManager = () => {
         }}
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.7rem' }}>
-          <img src="/vite.svg" alt="App Logo" style={{ width: '32px', height: '32px', borderRadius: '6px', objectFit: 'cover', background: '#fff', border: 'none' }} />
+          {/* Replace src with your own logo if needed */}
+          <img src="/vite.svg" alt="App Logo" style={{ width: '32px', height: '32px', borderRadius: '6px', objectFit: 'cover', background: '#fff', border: 'none', boxShadow: '0 1px 4px #0002' }} />
           <span
             style={{
               color: '#fff',
