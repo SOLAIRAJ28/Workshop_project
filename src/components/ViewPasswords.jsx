@@ -1,5 +1,9 @@
 import React, { useState, useEffect } from "react";
 import CryptoJS from "crypto-js";
+import { motion } from "framer-motion";
+import { FaEye, FaEyeSlash, FaTrashAlt, FaEdit, FaSignOutAlt, FaHome, FaPlus, FaLock, FaUser, FaGlobe } from "react-icons/fa";
+import { Tooltip } from "react-tooltip";
+import "react-tooltip/dist/react-tooltip.css";
 
 const ViewPasswords = () => {
   const [vault, setVault] = useState([]);
@@ -31,7 +35,6 @@ const ViewPasswords = () => {
     const entry = vault[index];
     let passwordToEdit = entry.password;
 
-    // If encrypted, prompt for pincode and decrypt
     if (entry.isEncrypted) {
       const pincode = prompt("Enter pincode to edit this password:");
       if (!pincode) return;
@@ -52,7 +55,6 @@ const ViewPasswords = () => {
     if (newSite && newUsername && newPassword) {
       const updatedVault = [...vault];
       if (entry.isEncrypted) {
-        // Re-encrypt with the same pincode
         const pincode = prompt("Re-enter pincode for encryption:");
         if (!pincode) return;
         const encryptedPassword = CryptoJS.AES.encrypt(newPassword, pincode).toString();
@@ -94,179 +96,163 @@ const ViewPasswords = () => {
   };
 
   return (
-    <div className="vault-container" style={{ width: '100vw', minHeight: '100vh', background: '#f7f7fa', display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '0', margin: '0', overflow: 'hidden' }}>
-      <header
-        style={{
-          width: "98%",
-          background: "linear-gradient(to right, #0f2027, #203a43, #2c5364)",
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          padding: "1.2rem 2rem",
-          position: "sticky",
-          top: 0,
-          zIndex: 100,
-          boxShadow: "0 2px 5px rgba(0,0,0,0.2)",
-        }}
-      >
-        <div style={{ display: "flex", alignItems: "center", gap: "0.6rem" }}>
-          <span role="img" aria-label="lock" style={{ fontSize: "1.4rem" }}>🔐</span>
-          <span style={{ color: "#fff", fontWeight: "bold", fontSize: "1.2rem" }}>Password Manager</span>
+    <div style={{
+      minHeight: '100vh',
+      background: 'linear-gradient(to bottom right, #f3f4f6, #e1f5fe)',
+      fontFamily: 'Segoe UI, sans-serif',
+      overflowX: 'hidden',
+      boxSizing: 'border-box',
+      display: 'flex',
+      flexDirection: 'column',
+    }}>
+
+      <nav style={{
+        width: '97%',
+        background: '#1e88e5',
+        color: '#fff',
+        padding: '1rem 2rem',
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        boxShadow: '0 4px 10px rgba(0,0,0,0.2)',
+        position: 'sticky',
+        top: 0,
+        zIndex: 10,
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+          <h1 style={{ fontSize: '1.6rem', margin: 0 }}><FaLock /> Password Manager</h1>
         </div>
-        <nav style={{ display: "flex", gap: "1rem", alignItems: "center" }}>
-          <button
-            onClick={() => window.location.href = "/view"}
-            style={{
-              padding: "0.6rem 1.2rem",
-              borderRadius: "8px",
-              border: "none",
-              background: "#0077cc",
-              color: "#fff",
-              fontWeight: "bold",
-              cursor: "pointer",
-              transition: "background 0.3s",
-            }}
-            onMouseOver={e => e.target.style.background = '#005fa3'}
-            onMouseOut={e => e.target.style.background = '#0077cc'}
-          >Saved Passwords</button>
-          <button
-            onClick={() => window.location.href = "/save"}
-            style={{
-              padding: "0.6rem 1.2rem",
-              borderRadius: "8px",
-              border: "none",
-              background: "#0077cc",
-              color: "#fff",
-              fontWeight: "bold",
-              cursor: "pointer",
-              transition: "background 0.3s",
-            }}
-            onMouseOver={e => e.target.style.background = '#005fa3'}
-            onMouseOut={e => e.target.style.background = '#0077cc'}
-          >Add Password</button>
+        <div style={{ display: 'flex', gap: '0.7rem' }}>
+          <button onClick={() => window.location.href = '/main'} style={navBtnStyle}><FaHome /> Home</button>
+          <button onClick={() => window.location.href = '/save'} style={navBtnStyle}><FaPlus /> Add</button>
           <button
             onClick={() => {
               localStorage.removeItem("currentUser");
               window.location.href = "/login";
             }}
-            style={{
-              padding: "0.6rem 1.2rem",
-              borderRadius: "8px",
-              border: "none",
-              background: "#e53935",
-              color: "#fff",
-              fontWeight: "bold",
-              cursor: "pointer",
-              transition: "background 0.3s",
-            }}
-            onMouseOver={e => e.target.style.background = '#c62828'}
-            onMouseOut={e => e.target.style.background = '#e53935'}
-          >Logout</button>
-        </nav>
-      </header>
+            style={{ ...navBtnStyle, background: '#d32f2f' }}
+          ><FaSignOutAlt /> Logout</button>
+        </div>
+      </nav>
 
       <div style={{
-        width: '100%', maxWidth: '500px', background: '#fff', borderRadius: '16px',
-        boxShadow: '0 2px 8px #0001', padding: '2rem', marginTop: '8rem',
-        marginBottom: '2rem', display: 'flex', flexDirection: 'column', alignItems: 'center'
+        flex: 1,
+        width: '99%',
+        maxWidth: '700px',
+        margin: '2rem auto',
+        background: '#ffffff',
+        padding: '2rem',
+        borderRadius: '18px',
+        boxShadow: '0 6px 20px rgba(0,0,0,0.15)'
       }}>
-        <h2 style={{
-          color: '#21a1f3', marginBottom: '2rem', fontSize: '2rem',
-          fontWeight: 'bold', textAlign: 'center'
-        }}>Saved Passwords</h2>
+        <h2 style={{ textAlign: 'center', color: '#2e7d32' }}>Your Saved Passwords</h2>
         {vault.length === 0 ? (
-          <div style={{ color: '#888', fontStyle: 'italic' }}>No passwords saved yet.</div>
+          <p style={{ textAlign: 'center', color: '#999' }}>No passwords saved yet.</p>
         ) : (
-          <ul style={{ width: '100%', padding: 0, listStyle: 'none' }}>
-            {vault.map((item, index) => (
-              <li
-                key={index}
-                style={{
-                  background: '#f7f7fa', borderRadius: '8px', boxShadow: '0 1px 4px #0001',
-                  padding: '1rem', marginBottom: '1rem', fontSize: '1rem', color: '#222',
-                  display: 'flex', flexDirection: 'column'
-                }}
-              >
-                <strong style={{ color: '#21a1f3' }}>{item.site}</strong>
-                <span>{item.username}</span>
-                <span>
-                  {item.isEncrypted
-                    ? (
-                      <>
-                        <span role="img" aria-label="locked">🔒</span>{" "}
-                        {decryptedPasswords[index]
-                          ? <span>{decryptedPasswords[index]}</span>
-                          : (
-                            <span>
-                              <input
-                                type="password"
-                                placeholder="Enter pincode"
-                                value={pincodeInputs[index] || ""}
-                                onChange={e => setPincodeInputs({ ...pincodeInputs, [index]: e.target.value })}
-                                style={{ borderRadius: "5px", border: "1px solid #aaa", marginRight: 6 }}
-                              />
-                              <button
-                                onClick={() => handleShowPassword(index)}
-                                style={{
-                                  padding: "0.25rem 0.7rem", borderRadius: "5px",
-                                  border: "none", background: "#1976d2", color: "#fff", fontWeight: "bold"
-                                }}
-                              >Show</button>
-                            </span>
-                          )
+          vault.map((item, index) => (
+            <motion.div
+              key={index}
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3, delay: index * 0.1 }}
+              style={{
+                background: '#f1f8e9',
+                marginBottom: '1rem',
+                padding: '1rem',
+                borderRadius: '12px',
+                boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+              }}>
+              <h3 style={{ margin: 0, color: '#33691e' }}><FaGlobe /> {item.site}</h3>
+              <p><FaUser /> {item.username}</p>
+              <p>
+                <FaLock /> Password: {item.isEncrypted ? (
+                  decryptedPasswords[index] ? (
+                    <strong>{decryptedPasswords[index]}</strong>
+                  ) : (
+                    <>
+                      <input
+                        type="password"
+                        placeholder="Enter PIN"
+                        value={pincodeInputs[index] || ""}
+                        onChange={(e) =>
+                          setPincodeInputs({ ...pincodeInputs, [index]: e.target.value })
                         }
-                      </>
-                    )
-                    : (
-                      <>
-                        <span role="img" aria-label="unlocked">🔓</span>{" "}
-                        {item.password}
-                      </>
-                    )
-                  }
-                </span>
-                <div style={{ display: 'flex', gap: '0.5rem', marginTop: '0.7rem' }}>
-                  <button
-                    onClick={() => handleEdit(index)}
-                    style={{
-                      padding: '0.5rem 1.2rem',
-                      borderRadius: '8px',
-                      border: 'none',
-                      background: '#0077cc',
-                      color: '#fff',
-                      fontWeight: 'bold',
-                      cursor: 'pointer'
-                    }}
-                  >Edit</button>
-                  <button
-                    onClick={() => handleDelete(index)}
-                    style={{
-                      padding: '0.5rem 1.2rem',
-                      borderRadius: '8px',
-                      border: 'none',
-                      background: '#c62828',
-                      color: '#fff',
-                      fontWeight: 'bold',
-                      cursor: 'pointer'
-                    }}
-                  >Delete</button>
-                </div>
-              </li>
-            ))}
-          </ul>
+                        style={inputStyle}
+                      />
+                      <button data-tooltip-id={`show-${index}`} onClick={() => handleShowPassword(index)} style={showBtn}><FaEye /></button>
+                      <Tooltip id={`show-${index}`} content="Reveal Password" />
+                    </>
+                  )
+                ) : (
+                  <strong>{item.password}</strong>
+                )}
+              </p>
+              <div style={{ marginTop: '0.5rem', display: 'flex', gap: '0.5rem' }}>
+                <button data-tooltip-id={`edit-${index}`} onClick={() => handleEdit(index)} style={editBtn}><FaEdit /> Edit</button>
+                <Tooltip id={`edit-${index}`} content="Edit Entry" />
+                <button data-tooltip-id={`delete-${index}`} onClick={() => handleDelete(index)} style={deleteBtn}><FaTrashAlt /> Delete</button>
+                <Tooltip id={`delete-${index}`} content="Delete Entry" />
+              </div>
+            </motion.div>
+          ))
         )}
-        <button
-          onClick={() => window.location.href = '/main'}
-          style={{
-            width: '100%', padding: '0.8rem', borderRadius: '8px',
-            border: 'none', background: '#e0e0e0', color: '#222',
-            fontWeight: 'bold', fontSize: '1.1rem',
-            cursor: 'pointer', marginTop: '1rem'
-          }}
-        >Back</button>
       </div>
     </div>
   );
+};
+
+const navBtnStyle = {
+  padding: '0.5rem 1rem',
+  background: '#1976d2',
+  color: '#fff',
+  border: 'none',
+  borderRadius: '8px',
+  fontWeight: 'bold',
+  cursor: 'pointer',
+  display: 'flex',
+  alignItems: 'center',
+  gap: '0.4rem',
+};
+
+const inputStyle = {
+  padding: '0.4rem',
+  borderRadius: '6px',
+  border: '1px solid #ccc',
+  marginRight: '0.5rem',
+  width: '100px',
+};
+
+const showBtn = {
+  padding: '0.4rem 0.8rem',
+  background: '#388e3c',
+  color: '#fff',
+  border: 'none',
+  borderRadius: '6px',
+  cursor: 'pointer',
+};
+
+const editBtn = {
+  background: '#1976d2',
+  color: '#fff',
+  padding: '0.4rem 1rem',
+  border: 'none',
+  borderRadius: '6px',
+  cursor: 'pointer',
+  display: 'flex',
+  alignItems: 'center',
+  gap: '0.4rem',
+};
+
+const deleteBtn = {
+  background: '#c62828',
+  color: '#fff',
+  padding: '0.4rem 1rem',
+  border: 'none',
+  borderRadius: '6px',
+  cursor: 'pointer',
+  display: 'flex',
+  alignItems: 'center',
+  gap: '0.4rem',
 };
 
 export default ViewPasswords;

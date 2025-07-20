@@ -1,5 +1,8 @@
 import React, { useState } from "react";
 import CryptoJS from "crypto-js";
+import { FaGlobe, FaUser, FaKey, FaLock, FaSave } from "react-icons/fa";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const SavePassword = () => {
   const [website, setWebsite] = useState("");
@@ -9,31 +12,33 @@ const SavePassword = () => {
 
   const handleSave = () => {
     if (!website || !username || !password) {
-      alert("Website, username, and password are required!");
+      toast.error("Website, username, and password are required!");
       return;
     }
 
     const currentUser = localStorage.getItem("currentUser");
     if (!currentUser) {
-      alert("Please log in first.");
+      toast.error("Please log in first.");
       return;
     }
 
-    // Load user object
     let user = JSON.parse(localStorage.getItem(currentUser));
     if (!user) {
-      alert("User data not found.");
+      toast.error("User data not found.");
       return;
     }
 
     let newEntry;
-    // If pincode present, lock it; else, save public.
     if (pincode) {
       if (!/^\d{4,}$/.test(pincode)) {
-        alert("Pincode must be at least 4 digits (numbers only).");
+        toast.warning("Pincode must be at least 4 digits (numbers only).",
+        );
         return;
       }
-      const encryptedPassword = CryptoJS.AES.encrypt(password, pincode).toString();
+      const encryptedPassword = CryptoJS.AES.encrypt(
+        password,
+        pincode
+      ).toString();
       newEntry = {
         site: website,
         username,
@@ -52,7 +57,7 @@ const SavePassword = () => {
     const updatedVault = [...(user.vault || []), newEntry];
     user.vault = updatedVault;
     localStorage.setItem(currentUser, JSON.stringify(user));
-    alert("Password saved successfully!");
+    toast.success("Password saved successfully!");
 
     setWebsite("");
     setUsername("");
@@ -62,197 +67,170 @@ const SavePassword = () => {
 
   return (
     <div
-  style={{
-    position: "fixed",
-    top: 0,
-    left: 0,
-    width: "100vw",
-    height: "100vh",
-    minHeight: "100vh",
-    minWidth: "100vw",
-    maxWidth: "100vw",
-    maxHeight: "100vh",
-    overflow: "hidden",
-    backgroundColor: "#f4f6f8",
-    fontFamily: "Segoe UI, sans-serif",
-    zIndex: 999, // Ensure on top
-    boxSizing: "border-box"
-  }}
->
+      style={{
+        width: "100vw",
+        height: "100vh",
+        overflow: "hidden",
+        background: "#f2f4f8",
+        fontFamily: "Segoe UI, sans-serif",
+        display: "flex",
+        flexDirection: "column",
+      }}
+    >
+      <ToastContainer />
+
       {/* Navbar */}
       <header
         style={{
-          width: "98%",
-          background: "linear-gradient(to right, #162c36, #254957)",
+          width: "97%",
+          background: "linear-gradient(to right, #0f2027, #203a43, #2c5364)",
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
-          padding: "1rem 2rem",
-          position: "fixed",
+          padding: "1.2rem 2rem",
+          position: "sticky",
           top: 0,
-          left: 0,
-          zIndex: 1000,
+          zIndex: 100,
           boxShadow: "0 2px 5px rgba(0,0,0,0.2)",
-          flexWrap: "wrap",
-          cursor: "default",
         }}
       >
-        {/* Logo */}
         <div style={{ display: "flex", alignItems: "center", gap: "0.6rem" }}>
-          <span role="img" aria-label="lock" style={{ fontSize: "1.4rem" }}>
-            🔐
-          </span>
+          <FaLock size={20} color="#fff" />
           <span
-            style={{
-              color: "#fff",
-              fontWeight: "bold",
-              fontSize: "1.2rem",
-            }}
+            style={{ color: "#fff", fontWeight: "bold", fontSize: "1.2rem" }}
           >
             Password Manager
           </span>
         </div>
 
-        {/* Nav Buttons */}
-        <div style={{ display: "flex", gap: "0.8rem", flexWrap: "wrap" }}>
+        <nav style={{ display: "flex", gap: "1rem" }}>
           <button
             onClick={() => (window.location.href = "/view")}
-            style={{
-              padding: "0.6rem 1.2rem",
-              borderRadius: "8px",
-              border: "none",
-              background: "#007bff",
-              color: "#fff",
-              fontWeight: "bold",
-              fontSize: "0.95rem",
-              cursor: "pointer",
-            }}
+            style={navBtnStyle}
           >
             Saved Passwords
           </button>
           <button
             onClick={() => (window.location.href = "/save")}
-            style={{
-              padding: "0.6rem 1.2rem",
-              borderRadius: "8px",
-              border: "none",
-              background: "#007bff",
-              color: "#fff",
-              fontWeight: "bold",
-              fontSize: "0.95rem",
-              cursor: "pointer",
-            }}
+            style={navBtnStyle}
           >
             Add Password
           </button>
-        </div>
+        </nav>
       </header>
 
-      {/* Main Section */}
       <main
         style={{
-          marginTop: "7rem",
+          marginTop: "6rem",
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
           flexDirection: "column",
-          padding: "2rem",
+          animation: "fadeIn 0.6s ease-in-out",
         }}
       >
-        <h2
-          style={{
-            fontSize: "1.6rem",
-            marginBottom: "1.5rem",
-            color: "#333",
-          }}
-        >
+        <h2 style={{ fontSize: "1.5rem", marginBottom: "1.5rem" }}>
           Save a New Password
         </h2>
 
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            gap: "1rem",
-            width: "100%",
-            maxWidth: "400px",
-            background: "#fff",
-            padding: "2rem",
-            borderRadius: "12px",
-            boxShadow: "0 4px 10px rgba(0,0,0,0.08)",
-          }}
-        >
-          <input
-            type="text"
-            placeholder="🌐 Website"
+        <div style={formBoxStyle}>
+          <Input
+            Icon={FaGlobe}
+            placeholder="Website"
             value={website}
-            onChange={(e) => setWebsite(e.target.value)}
-            style={{
-              padding: "0.75rem",
-              borderRadius: "8px",
-              border: "1px solid #ccc",
-              fontSize: "1rem",
-            }}
+            onChange={setWebsite}
           />
-          <input
-            type="text"
-            placeholder="👤 Username"
+          <Input
+            Icon={FaUser}
+            placeholder="Username"
             value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            style={{
-              padding: "0.75rem",
-              borderRadius: "8px",
-              border: "1px solid #ccc",
-              fontSize: "1rem",
-            }}
+            onChange={setUsername}
           />
-          <input
+          <Input
+            Icon={FaKey}
             type="password"
-            placeholder="🔑 Password"
+            placeholder="Password"
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            style={{
-              padding: "0.75rem",
-              borderRadius: "8px",
-              border: "1px solid #ccc",
-              fontSize: "1rem",
-            }}
+            onChange={setPassword}
           />
-          <input
+          <Input
+            Icon={FaLock}
             type="password"
-            placeholder="🔢 Pincode (optional for locking)"
+            placeholder="Pincode (optional)"
             value={pincode}
-            onChange={(e) => setPincode(e.target.value)}
-            style={{
-              padding: "0.75rem",
-              borderRadius: "8px",
-              border: "1px solid #ccc",
-              fontSize: "1rem",
-            }}
+            onChange={setPincode}
           />
-          <small style={{ color: "#555" }}>
-            Leave pincode empty to save as unlocked. Enter a pincode to make this password private/locked.
-          </small>
-          <button
-            onClick={handleSave}
-            style={{
-              marginTop: "1rem",
-              padding: "0.8rem",
-              borderRadius: "8px",
-              border: "none",
-              background: "#28a745",
-              color: "#fff",
-              fontWeight: "bold",
-              fontSize: "1rem",
-              cursor: "pointer",
-            }}
-          >
-            Save Password
+
+          <button onClick={handleSave} style={saveBtnStyle}>
+            <FaSave style={{ marginRight: "0.5rem" }} /> Save Password
           </button>
         </div>
       </main>
     </div>
   );
+};
+
+const Input = ({ Icon, type = "text", placeholder, value, onChange }) => (
+  <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+    <Icon style={{ color: "#555" }} />
+    <input
+      type={type}
+      placeholder={placeholder}
+      value={value}
+      onChange={(e) => onChange(e.target.value)}
+      style={inputStyle}
+    />
+  </div>
+);
+
+const inputStyle = {
+  padding: "0.6rem",
+  borderRadius: "8px",
+  border: "1px solid #ccc",
+  fontSize: "1rem",
+  width: "100%",
+  flex: 1,
+};
+
+const navBtnStyle = {
+  padding: "0.6rem 1.2rem",
+  borderRadius: "8px",
+  border: "none",
+  background: "#007bff",
+  color: "#fff",
+  fontWeight: "bold",
+  fontSize: "0.95rem",
+  cursor: "pointer",
+  transition: "all 0.3s",
+};
+
+const saveBtnStyle = {
+  marginTop: "1rem",
+  padding: "0.8rem",
+  borderRadius: "8px",
+  border: "none",
+  background: "#28a745",
+  color: "#fff",
+  fontWeight: "bold",
+  fontSize: "1rem",
+  cursor: "pointer",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  transition: "all 0.3s",
+};
+
+const formBoxStyle = {
+  display: "flex",
+  flexDirection: "column",
+  gap: "1rem",
+  width: "100%",
+  maxWidth: "400px",
+  background: "#fff",
+  padding: "2rem",
+  borderRadius: "12px",
+  boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+  animation: "slideUp 0.5s ease-in-out",
 };
 
 export default SavePassword;
