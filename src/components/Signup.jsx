@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Signup = () => {
   const [username, setUsername] = useState('');
@@ -9,40 +9,130 @@ const Signup = () => {
   const navigate = useNavigate();
 
   const handleSignup = () => {
+    if (!username || !password) {
+      toast.error('Please fill in all fields');
+      return;
+    }
+
     if (localStorage.getItem(username)) {
       toast.error('User already exists');
       return;
     }
+
     localStorage.setItem(username, JSON.stringify({ password, vault: [] }));
-    toast.success('Signup successful! You can now log in.');
-    setTimeout(() => navigate('/login'), 1200);
+    toast.success('Signup successful!');
+    setTimeout(() => navigate('/login'), 1500);
   };
 
   return (
-    <div className="auth-container" style={{ width: '100vw', minHeight: '100vh', background: '#f7f7fa', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '0', margin: '0', overflow: 'hidden' }}>
-      <header style={{ width: '100vw', background: '#003366', display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', padding: '1.2rem 2.5rem', position: 'sticky', top: 0, zIndex: 10 }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.7rem', height: '100%' }}>
-          <span role="img" aria-label="lock" style={{ fontSize: '1.5rem', color: '#fff', alignSelf: 'center' }}>🔒</span>
-          <span style={{ color: '#fff', fontWeight: 'bold', fontSize: '1.4rem', letterSpacing: '1px', fontFamily: 'Segoe UI, sans-serif', alignSelf: 'center' }}>MyPassword Manager</span>
-        </div>
-        <nav style={{ display: 'flex', gap: '1rem', alignItems: 'center', height: '100%' }}>
-          <button className="main-btn" style={{ padding: '0.6rem 1.2rem', borderRadius: '8px', border: 'none', background: '#00509e', color: '#fff', fontWeight: 'bold', fontSize: '1rem', cursor: 'pointer', marginRight: '0.5rem', alignSelf: 'center' }} onClick={() => window.location.href = '/view'}>Saved Passwords</button>
-          <button className="main-btn" style={{ padding: '0.6rem 1.2rem', borderRadius: '8px', border: 'none', background: '#00509e', color: '#fff', fontWeight: 'bold', fontSize: '1rem', cursor: 'pointer', marginRight: '0.5rem', alignSelf: 'center' }} onClick={() => window.location.href = '/save'}>Add Password</button>
-          <button className="main-btn" style={{ padding: '0.6rem 1.2rem', borderRadius: '8px', border: 'none', background: '#c62828', color: '#fff', fontWeight: 'bold', fontSize: '1rem', cursor: 'pointer', alignSelf: 'center' }} onClick={() => { localStorage.removeItem('currentUser'); window.location.href = '/login'; }}>Logout</button>
-        </nav>
-      </header>
-      <div style={{ maxWidth: '400px', margin: '2rem auto', background: '#fff', borderRadius: '16px', boxShadow: '0 2px 8px #0001', padding: '2rem', textAlign: 'center', width: '100%' }}>
-        <h2 style={{ marginBottom: '1.5rem', fontSize: '2rem' }}>📝 Signup for <span style={{ color: '#61dafb' }}>Password Manager</span></h2>
-        <input className="auth-input" style={{ marginBottom: '1rem' }} placeholder="👤 Username" value={username} onChange={(e) => setUsername(e.target.value)} />
-        <input className="auth-input" style={{ marginBottom: '1rem' }} placeholder="🔑 Password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
-        <button className="auth-btn" style={{ width: '100%', marginBottom: '1rem', background: '#21a1f3', color: '#fff', fontWeight: 'bold', fontSize: '1.1rem', borderRadius: '8px', border: 'none', padding: '0.7rem 0', cursor: 'pointer', transition: 'background 0.2s' }} onClick={handleSignup}>🎉 Signup</button>
-        <div style={{ marginTop: '1rem' }}>
-          <button className="auth-btn" style={{ width: '100%', background: '#61dafb', color: '#222', fontWeight: 'bold', fontSize: '1.1rem', borderRadius: '8px', border: 'none', padding: '0.7rem 0', cursor: 'pointer', transition: 'background 0.2s' }} onClick={() => window.location.href = '/login'}>🔐 Go to Login</button>
-        </div>
-        <ToastContainer position="top-right" autoClose={2000} hideProgressBar={false} newestOnTop closeOnClick pauseOnHover theme="colored" />
+    <div style={styles.pageContainer}>
+      <div style={styles.signupBox}>
+        <h2 style={styles.heading}>Password Manager</h2>
+
+        <input
+          type="text"
+          placeholder="Enter username"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+          style={styles.input}
+        />
+
+        <input
+          type="password"
+          placeholder="Enter password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          style={styles.input}
+        />
+
+        <button onClick={handleSignup} style={styles.signupButton}>
+          Sign Up
+        </button>
+
+        <p style={styles.switchText}>
+          Already have an account?{' '}
+          <span style={styles.linkText} onClick={() => navigate('/login')}>
+            Log In
+          </span>
+        </p>
       </div>
+
+      <ToastContainer
+        position="top-right"
+        autoClose={2000}
+        hideProgressBar={false}
+        newestOnTop
+        closeOnClick
+        pauseOnHover
+        theme="colored"
+      />
     </div>
   );
+};
+
+const styles = {
+  pageContainer: {
+    width: '100vw',
+    height: '100vh',
+    overflow: 'hidden',
+    background: 'linear-gradient(135deg, #e3f2fd, #ffffff)',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    fontFamily: 'Segoe UI, sans-serif',
+    boxSizing: 'border-box',
+    padding: '1rem',
+  },
+  signupBox: {
+    background: '#ffffff',
+    borderRadius: '16px',
+    padding: '2.5rem 2rem',
+    width: '100%',
+    maxWidth: '420px',
+    boxSizing: 'border-box',
+    boxShadow: '0 8px 24px rgba(0,0,0,0.1)',
+  },
+  heading: {
+    fontSize: '1.8rem',
+    fontWeight: 'bold',
+    marginBottom: '2rem',
+    color: '#333',
+    textAlign: 'center',
+  },
+  input: {
+    width: '100%',
+    padding: '1rem',
+    marginBottom: '1.2rem',
+    borderRadius: '8px',
+    border: '1px solid #ccc',
+    fontSize: '1rem',
+    outline: 'none',
+    boxSizing: 'border-box',
+  },
+  signupButton: {
+    width: '100%',
+    padding: '0.9rem',
+    backgroundColor: '#007bff',
+    color: '#fff',
+    fontSize: '1.05rem',
+    fontWeight: '600',
+    border: 'none',
+    borderRadius: '8px',
+    cursor: 'pointer',
+    transition: 'background-color 0.3s ease',
+  },
+  switchText: {
+    marginTop: '1.5rem',
+    fontSize: '0.95rem',
+    textAlign: 'center',
+    color: '#555',
+  },
+  linkText: {
+    color: '#007bff',
+    cursor: 'pointer',
+    textDecoration: 'underline',
+    marginLeft: '5px',
+  },
 };
 
 export default Signup;
